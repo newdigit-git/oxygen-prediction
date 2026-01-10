@@ -33,8 +33,6 @@
 6. [How to Run](#how-to-run)
 7. [Configuration & Customization](#configuration--customization)
 8. [Database Schema](#database-schema)
-9. [Troubleshooting](#troubleshooting)
-10. [Credits & License](#credits--license)
 
 ---
 
