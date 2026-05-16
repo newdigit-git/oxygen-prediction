@@ -36,6 +36,12 @@
 
 ---
 
+<p align="center">
+  <a href="https://github.com/newdigit-git/oxygen-prediction" target="_blank">
+    <img src="assets/dashboard.png" alt="oxygen-prediction" />
+  </a>
+</p>
+
 ## What is oxygen-prediction?
 
 **oxygen-prediction** is an enterprise-grade **real-time monitoring and analytics platform** for smart oxygen regulators and energy management systems in healthcare facilities. It ingests continuous telemetry from IoT devices, performs predictive depletion analytics, correlates climate data with health surge patterns, optimizes production planning, and provides clinical outcome feedback loops—all with **privacy-first**, fully local processing and **no external dependencies**.
