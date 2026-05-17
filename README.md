@@ -47,6 +47,11 @@
 **oxygen-prediction** is an enterprise-grade **real-time monitoring and analytics platform** for smart oxygen regulators and energy management systems in healthcare facilities. It ingests continuous telemetry from IoT devices, performs predictive depletion analytics, correlates climate data with health surge patterns, optimizes production planning, and provides clinical outcome feedback loops—all with **privacy-first**, fully local processing and **no external dependencies**.
 
 The physical smart regulator on the cylinder doesn't do any complex math locally; it simply transmits basic, anonymized metrics, specifically raw cylinder  pressure drop and real-time flow velocity over a low-power cellular network.
+<p align="center">
+  <a href="https://github.com/newdigit-git/oxygen-prediction" target="_blank">
+    <img src="assets/jaw-oxygen-sensor.png" alt="oxygen-prediction" />
+  </a>
+</p>
 
 
 Built for hospitals, clinics, and distributed medical supply chains, it enables predictive maintenance, resource optimization, and intelligent decision-making at scale.
