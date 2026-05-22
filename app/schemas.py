@@ -66,20 +66,40 @@ class SessionResponse(BaseModel):
         from_attributes = True
 
 
-# Depletion Prediction Schemas
 class DepletionPredictionResponse(BaseModel):
     """Depletion prediction response schema"""
     id: int
-    device_id: str
-    session_id: str
-    time_to_empty_minutes: float
-    depletion_time: datetime
-    critical_alert_time: datetime
-    status: str
-    created_at: datetime
-    
+    stage: str
+    processed_at: datetime
+    asset_metadata: AssetMetadata
+    thermodynamic_metrics: ThermodynamicMetrics
+    projections: Projections
+
     class Config:
         from_attributes = True
+
+
+class AssetMetadata(BaseModel):
+    device_id: str
+    facility_id: str
+    facility_name: str
+    ward_type: str
+    bed_number: str
+    cylinder_type: str
+
+
+class ThermodynamicMetrics(BaseModel):
+    current_pressure_psi: float
+    current_flow_rate_lmin: float
+    calculated_volume_liters: float
+    consumption_velocity_psi_per_hour: float
+
+
+class Projections(BaseModel):
+    time_to_empty_minutes: float
+    estimated_depletion_time: datetime
+    critical_threshold_alert_time: datetime
+    status: str
 
 
 # Device Schemas
