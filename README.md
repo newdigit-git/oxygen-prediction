@@ -84,34 +84,6 @@ Built for hospitals, clinics, and distributed medical supply chains, it enables 
 
 ---
 
-## Core Intelligence Layers
-
-### Stage 1: Predictive Depletion Analytics
-**Input:** Telemetry time-series + session summaries  
-**Process:** Applies pressure drop gradient; converts using ideal gas approximation  
-**Output:** Time-to-empty prediction, critical threshold alerts  
-**Use Case:** Prevent oxygen shortages, schedule refills proactively
-
-### Stage 2: Climate & Health Surge Correlation
-**Input:** Regional aggregated telemetry + external climate APIs  
-**Process:** Risk scoring (PM2.5, humidity, temperature); spike detection  
-**Output:** Surge forecasts, facility alerts, intervention recommendations  
-**Use Case:** Anticipate respiratory health crises, allocate resources
-
-### Stage 3: Production Planning Optimization
-**Input:** Demand forecasts, utilization metrics, distribution networks  
-**Process:** Supply chain optimization, scheduling, warehouse routing  
-**Output:** Production plans, action schedules, cost savings  
-**Use Case:** Reduce wastage, improve efficiency, lower costs
-
-### Stage 4: Clinical Outcomes Loop
-**Input:** Patient cohorts, intervention metrics, historical models  
-**Process:** Outcome analysis, feedback signals, trend detection  
-**Output:** Model refinement, clinical insights, intervention effectiveness  
-**Use Case:** Evidence-based decision making, continuous improvement
-
----
-
 ## Data Ingestion Pipeline
 
 ### Real-Time Telemetry Endpoint
@@ -151,6 +123,197 @@ Payload:
 ```
 
 ---
+
+## Core Intelligence Layers
+
+### Stage 1: Predictive Depletion Analytics
+**Description:** Once the server receives the raw data, it maps the device ID to a specific hospital asset, pulls its historical time-series baseline, and runs the thermodynamic calculations to output a precise timeline to zero.
+
+**Input:** Telemetry time-series + session summaries  
+**Process:** Applies pressure drop gradient; converts using ideal gas approximation  
+**Output:** Time-to-empty prediction, critical threshold alerts  
+**Use Case:** Prevent oxygen shortages, schedule refills proactively
+
+**Example Output:**
+```json
+{
+  "stage": "predictive_depletion_analytics",
+  "processed_at": "2026-05-16T12:00:02Z",
+  "asset_metadata": {
+    "device_id": "REG-NG-8842",
+    "facility_id": "FAC-LA-04",
+    "facility_name": "General Hospital Pediatric Ward",
+    "ward_type": "Pediatric ICU",
+    "bed_number": "ICU-08",
+    "cylinder_type": "J-Type (Standard 47L)"
+  },
+  "thermodynamic_metrics": {
+    "current_pressure_psi": 1200.0,
+    "current_flow_rate_lmin": 5.0,
+    "calculated_volume_liters": 3835.0,
+    "consumption_velocity_psi_per_hour": -75.0
+  },
+  "projections": {
+    "time_to_empty_minutes": 767.0,
+    "estimated_depletion_time": "2026-05-17T00:47:00Z",
+    "critical_threshold_alert_time": "2026-05-16T22:47:00Z",
+    "status": "NORMAL"
+  }
+}
+```
+
+### Stage 2: Climate & Health Surge Correlation
+**Description:** At this stage, the AI aggregates the localized data from the hospital cluster and merges it with real-time external environmental APIs to forecast upcoming regional health emergencies.
+
+**Input:** Regional aggregated telemetry + external climate APIs  
+**Process:** Risk scoring (PM2.5, humidity, temperature); spike detection  
+**Output:** Surge forecasts, facility alerts, intervention recommendations  
+**Use Case:** Anticipate respiratory health crises, allocate resources
+
+**Example Output:**
+```json
+{
+  "stage": "climate_health_surge_correlation",
+  "processed_at": "2026-05-16T12:05:00Z",
+  "geographical_scope": {
+    "region_code": "NG-LA-EPE",
+    "zone": "Lagos East",
+    "monitored_clinics_count": 14
+  },
+  "environmental_inputs": {
+    "pm2_5_aqi": 185.0,
+    "humidity_percentage": 22.0,
+    "temperature_celsius": 34.5,
+    "harmattan_dust_index": "SEVERE",
+    "climate_anomaly_detected": true    
+  },
+  "ml_surge_forecasting": {
+    "historical_pattern_match_id": "SURGE_2024_H4",
+    "predicted_respiratory_admission_increase_percentage": 42.0,
+    "forecast_confidence_score": 0.91,
+    "surge_window_start": "2026-05-18T12:00:00Z",
+    "time_horizon_hours": 48.0,
+    "risk_level": "HIGH"
+  }
+}
+```
+
+### Stage 3: Production Planning Optimization
+**Description:** Finally, the AI synthesizes individual asset depletion timelines with the macro-level regional surge forecasts. It translates health data into actionable, industrial logistics instructions for your oxygen plant floor.
+
+**Input:** Demand forecasts, utilization metrics, distribution networks  
+**Process:** Supply chain optimization, scheduling, warehouse routing  
+**Output:** Production plans, action schedules, cost savings  
+**Use Case:** Reduce wastage, improve efficiency, lower costs
+
+**Example Output:**
+```json
+{
+  "stage": "closed_loop_production_coordination",
+  "processed_at": "2026-05-16T12:10:00Z",
+  "target_plant": {
+    "plant_id": "NEWDIGIT-PLANT-01",
+    "location": "Lagos Hub",
+    "current_daily_capacity_liters": 500000
+  },
+  "ai_demand_forecast": {
+    "baseline_regional_demand_liters": 320000,
+    "predicted_surge_demand_liters": 465000,
+    "deficit_risk_liters": 145000,
+    "recommended_plant_utilization_percentage": 93.0
+  },
+  "automated_action_plan": {
+    "production_schedule_shift": "RAMP_UP_IMMEDIATE",
+    "priority_routing_queue": [
+      {
+        "facility_id": "FAC-LA-04",
+        "facility_name": "General Hospital Pediatric Ward",
+        "urgency_score": 9.8,
+        "allocated_cylinders": 25,
+        "dispatch_deadline": "2026-05-16T18:00:00Z"
+      },
+      {
+        "facility_id": "FAC-LA-11",
+        "facility_name": "St. Mary Maternal Clinic",
+        "urgency_score": 8.4,
+        "allocated_cylinders": 15,
+        "dispatch_deadline": "2026-05-16T21:30:00Z"
+      }
+    ]
+  }
+}
+```
+
+### Stage 4: Clinical Outcomes Loop
+**Description:** This stage ingests aggregated, privacy-compliant (no personally identifiable information) clinical records from the ward to analyze the direct health outcomes generated by our predictive supply chain.
+
+**Input:** Patient cohorts, intervention metrics, historical models  
+**Process:** Outcome analysis, feedback signals, trend detection  
+**Output:** Model refinement, clinical insights, intervention effectiveness  
+**Use Case:** Evidence-based decision making, continuous improvement
+
+**Example Output:**
+```json
+{
+  "stage": "patient_outcome_efficacy_loop",
+  "processed_at": "2026-05-16T13:00:00Z",
+  "clinical_environment": {
+    "facility_id": "FAC-LA-04",
+    "facility_name": "General Hospital Pediatric Ward",
+    "evaluation_period": "2026-05-01T00:00:00Z to 2026-05-15T23:59:59Z"
+  },
+  "anonymized_patient_cohort_data": [
+    {
+      "cohort_id": "CH-PED-RESP-01",
+      "age_group": "Neonatal (0-28 days)",
+      "gender_distribution": {
+        "male_percentage": 52.0,
+        "female_percentage": 48.0
+      },
+      "primary_diagnosis": "Severe Neonatal Pneumonia / RDS",
+      "total_patients_tracked": 34,
+      "clinical_outcomes": {
+        "discharged_healthy": 32,
+        "transferred_to_tertiary": 1,
+        "mortality_count": 1,
+        "survival_rate_percentage": 94.1
+      }
+    },
+    {
+      "cohort_id": "CH-PED-RESP-02",
+      "age_group": "Infant (29 days - 1 year)",
+      "gender_distribution": {
+        "male_percentage": 45.0,
+        "female_percentage": 55.0
+      },
+      "primary_diagnosis": "Acute Bronchiolitis (Harmattan-induced)",
+      "total_patients_tracked": 58,
+      "clinical_outcomes": {
+        "discharged_healthy": 57,
+        "transferred_to_tertiary": 1,
+        "mortality_count": 0,
+        "survival_rate_percentage": 100.0
+      }
+    }
+  ],
+  "ai_intervention_correlation": {
+    "predictive_alerts_issued_to_ward": 6,
+    "average_delivery_lead_time_hours": 18.5,
+    "zero_oxygen_stockout_incidents_maintained": true,
+    "historical_cohort_survival_baseline_percentage": 82.4,
+    "measured_survival_improvement_percentage": 14.1
+  },
+  "model_feedback_loop": {
+    "supply_adequacy_score": 0.98,
+    "clinical_need_met_index": "OPTIMAL",
+    "algorithm_tuning_action": "No adjustment required; predictive threshold aligned with clinical demand velocity."
+  }
+}
+```
+
+---
+
+
 
 ## API Endpoints
 
