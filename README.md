@@ -1,6 +1,6 @@
 <div align="center">
    <h1 style="margin-bottom: 4px; font-size: 2.6rem;">Newdigit Oxygen Prediction System</h1>
-   <h3 style="margin-top: 0; font-weight: 500;">AI Powered Modeling and Optimisation of Distributed Oxygen & Energy Intelligence System for Climate Resilient Healthcare</h3>
+   <h3 style="margin-top: 0; font-weight: 500;">AI Powered Modeling and Optimisation of Distributed Oxygen Intelligence System for Climate Resilient Healthcare</h3>
 </div>
 
 <p align="center">
