@@ -13,10 +13,12 @@ from typing import Any, Optional
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.database import get_db
 from app.models.models import Device, Telemetry
-from app.schemas import SessionCreate, TelemetryCreate
+from app.schemas import SessionCreate, TelemetryCreate, TelemetryResponse
 
 logger = logging.getLogger(__name__)
 
@@ -952,3 +954,21 @@ class ClinicalEngine:
             raise ValueError(
                 "baseline_scores and followup_scores must have the same length"
             )
+
+
+router = APIRouter(prefix="/telemetry", tags=["telemetry"])
+
+
+@router.post("", response_model=TelemetryResponse, status_code=status.HTTP_201_CREATED)
+def ingest_telemetry(
+    telemetry: TelemetryCreate,
+    db: Session = Depends(get_db),
+):
+    """Ingest telemetry payload and persist a Telemetry record."""
+    try:
+        return IngestionService.ingest_telemetry(db, telemetry)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to ingest telemetry: {str(exc)}",
+        )

@@ -69,11 +69,13 @@ class SessionResponse(BaseModel):
 class DepletionPredictionResponse(BaseModel):
     """Depletion prediction response schema"""
     id: int
-    stage: str
-    processed_at: datetime
-    asset_metadata: AssetMetadata
-    thermodynamic_metrics: ThermodynamicMetrics
-    projections: Projections
+    device_id: str
+    session_id: str
+    time_to_empty_minutes: float
+    depletion_time: datetime
+    critical_alert_time: datetime
+    status: str
+    created_at: datetime
 
     class Config:
         from_attributes = True
