@@ -42,9 +42,9 @@
   </a>
 </p>
 
-## What is oxygen-prediction?
+## What is Newdigit oxygen prediction?
 
-**oxygen-prediction** is an enterprise-grade **real-time monitoring and analytics platform** for smart oxygen regulators and energy management systems in healthcare facilities. It ingests continuous telemetry from IoT devices, performs predictive depletion analytics, correlates climate data with health surge patterns, optimizes production planning, and provides clinical outcome feedback loops—all with **privacy-first**, fully local processing and **no external dependencies**.
+It is an enterprise grade real time monitoring and analytics platform for smart oxygen regulators and energy management systems in healthcare facilities. It ingests continuous telemetry from IoT devices, performs predictive depletion analytics, correlates climate data with health surge patterns, optimizes production planning, and provides clinical outcome feedback loops all with **privacy first**, fully local processing and **no external dependencies**.
 
 The physical smart regulator on the cylinder doesn't do any complex math locally; it simply transmits basic, anonymized metrics, specifically raw cylinder  pressure drop and real-time flow velocity over a low-power cellular network.
 <p align="center">
@@ -63,12 +63,12 @@ Built for hospitals, clinics, and distributed medical supply chains, it enables 
 ### Core Capabilities
 
 - **Real-Time Telemetry Ingestion:** Stream continuous device metrics (pressure, flow, battery, signal strength) at scale
-- **Time-Series Analytics:** Partitioned PostgreSQL storage optimized for high-volume sensor data
-- **Predictive Depletion Engine:** Calculates oxygen tank depletion using pressure-drop gradient analysis (ideal gas approximation)
+- **Time-Series Analytics:** Partitioned PostgreSQL storage optimized for high volume sensor data
+- **Predictive Depletion Engine:** Calculates oxygen tank depletion using pressure drop gradient analysis (ideal gas approximation)
 - **Climate Intelligence:** Correlates regional climate data (PM2.5, humidity, temperature) with health surge patterns
 - **Production Optimization:** Forecasts demand and optimizes supply chain logistics in real-time
 - **Clinical Feedback Loops:** Captures and analyzes clinical outcomes to improve predictions
-- **Async Processing:** Celery + Redis for non-blocking enrichment pipeline
+- **Async Processing:** Celery + Redis for non blocking enrichment pipeline
 - **Export & Sharing:** JSON and HTML exports with full audit trails
 - **Privacy-First:** All processing local, no cached data retention, no external APIs required
 
@@ -76,9 +76,9 @@ Built for hospitals, clinics, and distributed medical supply chains, it enables 
 
 - **Multi-stage Enrichment:** 4-layer AI pipeline (ingestion → detection → enrichment → insights)
 - **Fault Detection:** Automatic flagging of anomalies and device failures
-- **Device Registry:** Track all IoT devices with last-seen timestamps
-- **Session Tracking:** Cross-device correlation and session-level analytics
-- **RESTful API:** OpenAPI/Swagger documentation auto-generated
+- **Device Registry:** Track all IoT devices with last seen timestamps
+- **Session Tracking:** Cross device correlation and session level analytics
+- **RESTful API:** OpenAPI/Swagger documentation auto generated
 - **Docker-Ready:** Containerized backend, database, and Redis with docker-compose
 - **Scalable:** Partitioned tables, connection pooling, async workers
 
@@ -129,9 +129,9 @@ Payload:
 ### Stage 1: Predictive Depletion Analytics
 **Description:** Once the server receives the raw data, it maps the device ID to a specific hospital asset, pulls its historical time-series baseline, and runs the thermodynamic calculations to output a precise timeline to zero.
 
-**Input:** Telemetry time-series + session summaries  
+**Input:** Telemetry time series + session summaries  
 **Process:** Applies pressure drop gradient; converts using ideal gas approximation  
-**Output:** Time-to-empty prediction, critical threshold alerts  
+**Output:** Time To Empty prediction, critical threshold alerts  
 **Use Case:** Prevent oxygen shortages, schedule refills proactively
 
 **Example Output:**
@@ -199,7 +199,7 @@ Payload:
 ```
 
 ### Stage 3: Production Planning Optimization
-**Description:** Finally, the AI synthesizes individual asset depletion timelines with the macro-level regional surge forecasts. It translates health data into actionable, industrial logistics instructions for your oxygen plant floor.
+**Description:** Finally, the AI synthesizes individual asset depletion timelines with the macro level regional surge forecasts. It translates health data into actionable, industrial logistics instructions for your oxygen plant floor.
 
 **Input:** Demand forecasts, utilization metrics, distribution networks  
 **Process:** Supply chain optimization, scheduling, warehouse routing  
@@ -245,7 +245,7 @@ Payload:
 ```
 
 ### Stage 4: Clinical Outcomes Loop
-**Description:** This stage ingests aggregated, privacy-compliant (no personally identifiable information) clinical records from the ward to analyze the direct health outcomes generated by our predictive supply chain.
+**Description:** This stage ingests aggregated, privacy compliant (no personally identifiable information) clinical records from the ward to analyze the direct health outcomes generated by our predictive supply chain.
 
 **Input:** Patient cohorts, intervention metrics, historical models  
 **Process:** Outcome analysis, feedback signals, trend detection  
