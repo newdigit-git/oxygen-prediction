@@ -1,24 +1,26 @@
+from collections.abc import Generator
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from typing import AsyncGenerator, Generator
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
+
 from app.core.config import get_settings
 
 settings = get_settings()
 
-# Sync engine for Alembic migrations
-engine = create_engine(
-    settings.DATABASE_URL,
-    echo=settings.DEBUG,
-    pool_pre_ping=True,
-)
+engine_kwargs: dict = {
+    "echo": settings.DEBUG,
+    "pool_pre_ping": True,
+}
+if not settings.DATABASE_URL.startswith("sqlite"):
+    engine_kwargs.update(
+        pool_size=settings.DB_POOL_SIZE,
+        max_overflow=settings.DB_MAX_OVERFLOW,
+        pool_timeout=settings.DB_POOL_TIMEOUT,
+    )
+else:
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
 
-# Async engine for async operations
-async_engine = create_async_engine(
-    settings.DATABASE_URL.replace("postgresql+psycopg2", "postgresql+asyncpg"),
-    echo=settings.DEBUG,
-    pool_pre_ping=True,
-)
+engine = create_engine(settings.DATABASE_URL, **engine_kwargs)
 
 SessionLocal = sessionmaker(
     autocommit=False,
@@ -26,30 +28,13 @@ SessionLocal = sessionmaker(
     bind=engine,
 )
 
-AsyncSessionLocal = sessionmaker(
-    async_engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autocommit=False,
-    autoflush=False,
-)
-
 Base = declarative_base()
 
 
 def get_db() -> Generator[Session, None, None]:
-    """Dependency for getting sync database session"""
+    """Yield one database session per request and always close it."""
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-
-
-async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
-    """Dependency for getting async database session"""
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        finally:
-            await session.close()

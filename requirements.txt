@@ -9,3 +9,7 @@ python-dotenv==1.0.0
 celery==5.3.4
 redis==5.0.1
 httpx==0.25.1
+structlog==23.2.0
+tenacity==8.2.3
+pytest==7.4.3
+pytest-cov==4.1.0

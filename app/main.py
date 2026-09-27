@@ -1,53 +1,64 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import get_settings
-from app.core.database import Base, engine
-from app.api.routes import telemetry, sessions, analytics
+from sqlalchemy import text
 
-# Initialize settings
+from app.api.routes import analytics, sessions, telemetry
+from app.core.config import get_settings
+from app.core.database import SessionLocal
+
 settings = get_settings()
 
-# Create FastAPI app
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="Real time telemetry ingestion + analytics backend for Newdigit's AI Powered Modeling and Optimisation of Distributed Oxygen & Energy Intelligence System for Climate Resilient Healthcare",
-    version="1.0.0",
-    docs_url="/docs",
-    openapi_url="/openapi.json",
+    description="Real-time telemetry ingestion and analytics backend for smart oxygen systems.",
+    version=settings.VERSION,
+    docs_url="/docs" if settings.DEBUG else None,
+    openapi_url="/openapi.json" if settings.DEBUG else None,
 )
 
-# CORS Middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+if settings.cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST"],
+        allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+    )
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
-# Include routes
 app.include_router(telemetry.router, prefix=settings.API_V1_STR)
 app.include_router(sessions.router, prefix=settings.API_V1_STR)
 app.include_router(analytics.router, prefix=settings.API_V1_STR)
 
 
-@app.get("/health")
-async def health_check():
-    """Application health check"""
-    return {
-        "status": "healthy",
-        "service": settings.PROJECT_NAME
-    }
+@app.get("/", include_in_schema=False)
+def root() -> dict[str, str]:
+    return {"service": settings.PROJECT_NAME, "version": settings.VERSION}
+
+
+@app.get("/health/live", include_in_schema=False)
+def liveness() -> dict[str, str]:
+    return {"status": "alive"}
+
+
+@app.get("/health", include_in_schema=False)
+def health_check() -> dict[str, str]:
+    return {"status": "healthy", "service": settings.PROJECT_NAME}
+
+
+@app.get("/health/ready", include_in_schema=False)
+def readiness() -> dict[str, str]:
+    try:
+        with SessionLocal() as db:
+            db.execute(text("SELECT 1"))
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="database unavailable",
+        ) from exc
+    return {"status": "ready", "database": "reachable"}
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "app.main:app",
-        host=settings.HOST,
-        port=settings.PORT,
-        reload=settings.DEBUG
-    )
+
+    uvicorn.run("app.main:app", host=settings.HOST, port=settings.PORT, reload=settings.DEBUG)
