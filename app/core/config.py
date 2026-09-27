@@ -18,10 +18,13 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "Newdigit Smart Oxygen & Energy Intelligence System"
     VERSION: str = "1.0.0"
+    ENVIRONMENT: str = "development"
     DEBUG: bool = False
     HOST: str = "0.0.0.0"
     PORT: int = Field(default=8000, ge=1, le=65535)
     CORS_ORIGINS: str = ""
+    REQUIRE_INGEST_AUTH: bool = False
+    INGEST_API_KEY: str | None = None
 
     REDIS_URL: str = "redis://localhost:6379/0"
     CELERY_BROKER_URL: str = "redis://localhost:6379/0"

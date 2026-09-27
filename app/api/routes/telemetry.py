@@ -2,11 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.security import verify_device_key
 from app.models.models import Telemetry
 from app.schemas import TelemetryCreate, TelemetryResponse
 from app.services.ingestion_service import IngestionService
 
-router = APIRouter(prefix="/telemetry", tags=["telemetry"])
+router = APIRouter(
+    prefix="/telemetry",
+    tags=["telemetry"],
+    dependencies=[Depends(verify_device_key)],
+)
 
 
 @router.post("", response_model=TelemetryResponse, status_code=status.HTTP_201_CREATED)

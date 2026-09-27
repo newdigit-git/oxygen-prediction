@@ -1,115 +1,106 @@
-from sqlalchemy import Column, String, Integer, Float, DateTime, ForeignKey, BigInteger, JSON, func
-from sqlalchemy.orm import relationship
-from datetime import datetime
+from sqlalchemy import BigInteger, Column, DateTime, Float, ForeignKey, Integer, JSON, String, func
+from sqlalchemy.orm import declarative_base, relationship
+
 from app.core.database import Base
+
+AUTOINCREMENT_ID = BigInteger().with_variant(Integer, "sqlite")
 
 
 class Device(Base):
-    """Devices Table"""
     __tablename__ = "devices"
-    
+
     id = Column(String, primary_key=True, index=True)
     created_at = Column(DateTime, default=func.now())
     last_seen = Column(DateTime, nullable=True)
-    
-    # Relationships
+
     telemetry = relationship("Telemetry", back_populates="device")
     sessions = relationship("Session", back_populates="device")
 
 
 class Telemetry(Base):
-    """Telemetry Table (can be partitioned by month)"""
     __tablename__ = "telemetry"
-    
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
-    device_id = Column(String, ForeignKey("devices.id"), index=True)
-    timestamp = Column(BigInteger, index=True) 
-    battery = Column(Integer)
-    pressure = Column(Float)
-    flow = Column(Float)
-    signal_strength = Column(Integer)
-    location = Column(String)
-    created_at = Column(DateTime, default=func.now())
-    
-    # Relationships
+
+    id = Column(AUTOINCREMENT_ID, primary_key=True, index=True, autoincrement=True)
+    device_id = Column(String, ForeignKey("devices.id"), index=True, nullable=False)
+    timestamp = Column(BigInteger, index=True, nullable=False)
+    battery = Column(Integer, nullable=False)
+    pressure = Column(Float, nullable=False)
+    flow = Column(Float, nullable=False)
+    signal_strength = Column(Integer, nullable=False)
+    location = Column(String, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+
     device = relationship("Device", back_populates="telemetry")
 
 
 class Session(Base):
-    """Session Table"""
     __tablename__ = "sessions"
-    
+
     sid = Column(String, primary_key=True, index=True)
-    device_id = Column(String, ForeignKey("devices.id"), index=True)
-    location = Column(String)
-    t_start = Column(DateTime, index=True)
-    t_end = Column(DateTime, index=True)
-    initial_pressure = Column(Float)
-    final_pressure = Column(Float)
-    flow_rate = Column(Float)
-    battery_final = Column(Float)
-    fault_flag = Column(Integer, default=0)
-    signal_strength = Column(Integer)
-    created_at = Column(DateTime, default=func.now())
-    
-    # Relationships
+    device_id = Column(String, ForeignKey("devices.id"), index=True, nullable=False)
+    location = Column(String, nullable=False)
+    t_start = Column(DateTime, index=True, nullable=False)
+    t_end = Column(DateTime, index=True, nullable=False)
+    initial_pressure = Column(Float, nullable=False)
+    final_pressure = Column(Float, nullable=False)
+    flow_rate = Column(Float, nullable=False)
+    battery_final = Column(Float, nullable=False)
+    fault_flag = Column(Integer, default=0, nullable=False)
+    signal_strength = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+
     device = relationship("Device", back_populates="sessions")
     depletion_predictions = relationship("DepletionPrediction", back_populates="session")
 
 
 class DepletionPrediction(Base):
-    """Depletion Predictions Table"""
     __tablename__ = "depletion_predictions"
-    
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
-    device_id = Column(String, index=True)
-    session_id = Column(String, ForeignKey("sessions.sid"), index=True)
-    time_to_empty_minutes = Column(Float)
-    depletion_time = Column(DateTime)
-    critical_alert_time = Column(DateTime)
-    status = Column(String)
-    created_at = Column(DateTime, default=func.now())
-    
-    # Relationships
+
+    id = Column(AUTOINCREMENT_ID, primary_key=True, index=True, autoincrement=True)
+    device_id = Column(String, index=True, nullable=False)
+    session_id = Column(String, ForeignKey("sessions.sid"), index=True, nullable=False)
+    time_to_empty_minutes = Column(Float, nullable=False)
+    depletion_time = Column(DateTime, nullable=False)
+    critical_alert_time = Column(DateTime, nullable=False)
+    status = Column(String, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+
     session = relationship("Session", back_populates="depletion_predictions")
 
 
 class SurgeForecast(Base):
-    """Climate Surge Forecast Table"""
     __tablename__ = "surge_forecasts"
-    
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
-    region_code = Column(String, index=True)
-    pm25 = Column(Float)
-    humidity = Column(Float)
-    temperature = Column(Float)
-    risk_level = Column(String)
-    surge_percentage = Column(Float)
-    confidence = Column(Float)
-    forecast_window = Column(DateTime)
-    created_at = Column(DateTime, default=func.now())
+
+    id = Column(AUTOINCREMENT_ID, primary_key=True, index=True, autoincrement=True)
+    region_code = Column(String, index=True, nullable=False)
+    pm25 = Column(Float, nullable=False)
+    humidity = Column(Float, nullable=False)
+    temperature = Column(Float, nullable=False)
+    risk_level = Column(String, nullable=False)
+    surge_percentage = Column(Float, nullable=False)
+    confidence = Column(Float, nullable=False)
+    forecast_window = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
 
 
 class ProductionPlan(Base):
-    """Production Planning Table"""
     __tablename__ = "production_plans"
-    
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
-    plant_id = Column(String, index=True)
-    demand_forecast = Column(JSON)
-    utilization = Column(Float)
-    action_plan = Column(JSON)
-    created_at = Column(DateTime, default=func.now())
+
+    id = Column(AUTOINCREMENT_ID, primary_key=True, index=True, autoincrement=True)
+    plant_id = Column(String, index=True, nullable=False)
+    demand_forecast = Column(JSON, nullable=False)
+    utilization = Column(Float, nullable=False)
+    action_plan = Column(JSON, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
 
 
 class ClinicalOutcome(Base):
-    """Clinical Outcomes Loop Table"""
     __tablename__ = "clinical_outcomes"
-    
-    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
-    facility_id = Column(String, index=True)
-    cohort_data = Column(JSON)
-    survival_rate = Column(Float)
-    intervention_metrics = Column(JSON)
-    model_feedback = Column(JSON)
-    created_at = Column(DateTime, default=func.now())
+
+    id = Column(AUTOINCREMENT_ID, primary_key=True, index=True, autoincrement=True)
+    facility_id = Column(String, index=True, nullable=False)
+    cohort_data = Column(JSON, nullable=False)
+    survival_rate = Column(Float, nullable=False)
+    intervention_metrics = Column(JSON, nullable=False)
+    model_feedback = Column(JSON, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
