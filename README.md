@@ -360,8 +360,13 @@ Payload:
 git clone https://github.com/newdigit-git/oxygen-prediction.git
 cd oxygen-prediction
 
-# Start all services (PostgreSQL + Redis + API)
-docker-compose up --build
+# Configure production secrets and start all services (PostgreSQL + Redis + API + worker)
+cp .env.production.example .env
+# Replace every placeholder secret before starting
+docker compose up --build -d
+
+# Apply the schema migration from a release/admin environment
+docker compose run --rm api alembic upgrade head
 
 ```
 
@@ -388,8 +393,11 @@ cp .env.example .env
 # Create database
 createdb oxygen_pred
 
-# Start server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# Apply schema migrations
+alembic upgrade head
+
+# Start server in development
+DEBUG=True uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Option 3: Bootstrap Scripts
