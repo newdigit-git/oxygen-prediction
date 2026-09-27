@@ -101,9 +101,9 @@ class DepletionPredictionResponse(BaseModel):
     id: int
     device_id: str
     session_id: str
-    time_to_empty_minutes: float
-    depletion_time: datetime
-    critical_alert_time: datetime
+    time_to_empty_minutes: float | None
+    depletion_time: datetime | None
+    critical_alert_time: datetime | None
     status: str
     created_at: datetime
 

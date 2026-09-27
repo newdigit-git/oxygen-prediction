@@ -59,9 +59,9 @@ class DepletionPrediction(Base):
     id = Column(AUTOINCREMENT_ID, primary_key=True, index=True, autoincrement=True)
     device_id = Column(String, index=True, nullable=False)
     session_id = Column(String, ForeignKey("sessions.sid"), index=True, nullable=False)
-    time_to_empty_minutes = Column(Float, nullable=False)
-    depletion_time = Column(DateTime, nullable=False)
-    critical_alert_time = Column(DateTime, nullable=False)
+    time_to_empty_minutes = Column(Float, nullable=True)
+    depletion_time = Column(DateTime, nullable=True)
+    critical_alert_time = Column(DateTime, nullable=True)
     status = Column(String, nullable=False)
     created_at = Column(DateTime, default=func.now(), nullable=False)
 

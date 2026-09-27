@@ -148,6 +148,14 @@ class IngestionService:
             db.commit()
             db.refresh(telemetry)
 
+            from app.core.config import get_settings
+            if get_settings().ENABLE_ASYNC_PROCESSING:
+                try:
+                    from app.workers.tasks import process_telemetry_batch
+                    process_telemetry_batch.delay([telemetry.id])
+                except Exception as exc:
+                    log.warning("ingest_telemetry.enqueue_failed", error=str(exc))
+
             log.info("ingest_telemetry.ok", device_id=telemetry_data.id, telemetry_id=telemetry.id)
             return telemetry
 
