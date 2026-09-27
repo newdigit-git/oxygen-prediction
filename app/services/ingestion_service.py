@@ -181,6 +181,11 @@ class IngestionService:
         log.info("ingest_session.start", device_id=session_data.id, sid=session_data.sid)
 
         try:
+            existing = db.query(SessionModel).filter(SessionModel.sid == session_data.sid).first()
+            if existing is not None:
+                log.info("ingest_session.duplicate", sid=session_data.sid)
+                return existing
+
             device = db.query(Device).filter(Device.id == session_data.id).first()
             if not device:
                 device = Device(id=session_data.id)
